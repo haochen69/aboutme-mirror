@@ -1,619 +1,2069 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>about penalty</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scholara — K–12 Learning Resources for Teachers, Parents & Students</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #eef1f6;
-      --surface: #f8f9fc;
-      --ink: #1e2330;
-      --muted: #7c8494;
-      --border: #dde1ea;
-      --yellow: #FFD23F;
-      --green: #3EC98E;
+      /* ── Green palette ── */
+      --indigo-950: #0a1f12;   /* darkest forest */
+      --indigo-900: #14532D;   /* deep forest green */
+      --indigo-800: #166534;   /* forest green */
+      --indigo-700: #15803D;   /* medium forest */
+      --violet:     #16A34A;   /* primary green */
+      --violet-lt:  #22C55E;   /* lighter green */
+      --violet-xs:  #F0FDF4;   /* mint tint */
+      --amber:      #F59E0B;   /* warm amber accent */
+      --amber-lt:   #FEF3C7;
+      --rose:       #F43F5E;
+      --teal:       #0D9488;
+      --teal-lt:    #CCFBF1;
+      --sky:        #0891B2;
+      --sky-lt:     #CFFAFE;
+      --lavender:   #F0FDF4;   /* mint background tint */
+      --gray-50:    #F9FAFB;
+      --gray-100:   #F3F4F6;
+      --gray-200:   #E5E7EB;
+      --gray-400:   #9CA3AF;
+      --gray-500:   #6B7280;
+      --gray-700:   #374151;
+      --gray-900:   #111827;
+      --white:      #FFFFFF;
+
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-card: 0 2px 16px rgba(20,83,45,0.08), 0 1px 4px rgba(20,83,45,0.06);
+      --shadow-card-hover: 0 8px 32px rgba(22,163,74,0.20), 0 2px 8px rgba(20,83,45,0.10);
+      --shadow-hero-card: 0 24px 64px rgba(20,83,45,0.35), 0 4px 16px rgba(20,83,45,0.18);
     }
 
-    * { cursor: none !important; }
-
-    #cursor-dot {
-      position: fixed;
-      width: 8px; height: 8px;
-      background: var(--ink);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.2s;
-    }
-
-    #cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 2.5px solid var(--ink);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition:
-        width 0.25s cubic-bezier(0.16,1,0.3,1),
-        height 0.25s cubic-bezier(0.16,1,0.3,1),
-        border-radius 0.25s cubic-bezier(0.16,1,0.3,1),
-        background 0.2s;
-    }
-
-    #cursor-ring.hovering { background: rgba(255,210,63,0.2); }
-
-    #cursor-ring.snapped {
-      transition:
-        width 0.3s cubic-bezier(0.16,1,0.3,1),
-        height 0.3s cubic-bezier(0.16,1,0.3,1),
-        border-radius 0.3s cubic-bezier(0.16,1,0.3,1),
-        left 0.18s cubic-bezier(0.16,1,0.3,1),
-        top 0.18s cubic-bezier(0.16,1,0.3,1),
-        background 0.2s;
-    }
+    html { scroll-behavior: smooth; font-size: 16px; }
 
     body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'Nunito', sans-serif;
-      min-height: 100vh;
-      display: flex;
+      font-family: var(--font-body);
+      color: var(--gray-900);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+
+    .container {
+      width: min(1160px, 100% - 48px);
+      margin-inline: auto;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY HELPERS
+    ============================================================ */
+    .eyebrow {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: 2rem 1.25rem;
-    }
-
-    .wrap {
-      width: 100%;
-      max-width: 520px;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .wrap > * { opacity: 0; animation: up 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
-    .wrap > *:nth-child(1) { animation-delay: 0.05s; }
-    .wrap > *:nth-child(2) { animation-delay: 0.13s; }
-    .wrap > *:nth-child(3) { animation-delay: 0.20s; }
-    .wrap > *:nth-child(4) { animation-delay: 0.27s; }
-    .wrap > *:nth-child(5) { animation-delay: 0.33s; }
-    .wrap > *:nth-child(6) { animation-delay: 0.39s; }
-    .wrap > *:nth-child(7) { animation-delay: 0.44s; }
-
-    @keyframes up {
-      from { opacity: 0; transform: translateY(28px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .name-card {
-      background: var(--yellow);
-      border-radius: 28px;
-      padding: 2rem 2rem 1.75rem;
-      border: 2.5px solid var(--ink);
-      box-shadow: 5px 5px 0 var(--ink);
-      position: relative;
-    }
-
-    .hello {
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink);
-      margin-bottom: 0.4rem;
-    }
-
-    h1 {
-      font-size: clamp(2.75rem, 12vw, 4.5rem);
-      font-weight: 900;
-      line-height: 1.0;
-      letter-spacing: -0.025em;
-      color: var(--ink);
-      margin-bottom: 0.9rem;
-    }
-
-    .wave {
-      display: inline-block;
-      animation: wave 2.5s ease-in-out infinite;
-      transform-origin: 70% 70%;
-    }
-
-    @keyframes wave {
-      0%,100% { transform: rotate(0deg); }
-      15%      { transform: rotate(18deg); }
-      30%      { transform: rotate(-8deg); }
-      45%      { transform: rotate(18deg); }
-      60%      { transform: rotate(-4deg); }
-      75%      { transform: rotate(10deg); }
-    }
-
-    .tagline {
-      font-size: 1rem;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
       font-weight: 700;
-      color: var(--ink);
-      opacity: 0.7;
-      line-height: 1.5;
-      max-width: 320px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 16px;
+    }
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--violet);
+      border-radius: 2px;
     }
 
-    .bio-card {
-      background: var(--surface);
-      border-radius: 24px;
-      padding: 1.6rem 1.75rem;
-      border: 2.5px solid var(--ink);
-      box-shadow: 5px 5px 0 var(--ink);
-      font-size: 1rem;
+    .section-heading {
+      font-family: var(--font-display);
       font-weight: 700;
-      line-height: 1.75;
-      color: var(--muted);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      line-height: 1.15;
+      color: var(--indigo-900);
+      letter-spacing: -0.02em;
+    }
+    .section-heading em {
+      font-style: italic;
+      color: var(--violet);
     }
 
-    .bio-card strong { color: var(--ink); font-weight: 900; }
-
-    .details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      line-height: 1.7;
+      max-width: 560px;
     }
 
-    .detail {
-      border-radius: 20px;
-      padding: 1.1rem 1.25rem;
-      border: 2.5px solid var(--ink);
-      box-shadow: 4px 4px 0 var(--ink);
-      transition: transform 0.15s, box-shadow 0.15s;
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 13px 26px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      white-space: nowrap;
     }
-
-    .detail:nth-child(1) { background: #ffe8f0; }
-    .detail:nth-child(2) { background: #fff3d6; }
-
-    .detail-label {
-      font-size: 0.65rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
+    .btn-primary {
+      background: var(--violet);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(22,163,74,0.35);
     }
-
-    .detail-val {
-      font-size: 0.9rem;
-      font-weight: 900;
-      color: var(--ink);
+    .btn-primary:hover {
+      background: #15803D;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(22,163,74,0.45);
     }
-
-    .section-label {
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
+    .btn-outline {
+      background: transparent;
+      color: var(--indigo-900);
+      border: 2px solid var(--indigo-900);
     }
-
-    .projects-card {
-      background: var(--surface);
-      border-radius: 24px;
-      padding: 1.6rem 1.75rem;
-      border: 2.5px solid var(--ink);
-      box-shadow: 5px 5px 0 var(--ink);
+    .btn-outline:hover {
+      background: var(--indigo-900);
+      color: var(--white);
+      transform: translateY(-2px);
     }
+    .btn-outline-white {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.6);
+    }
+    .btn-outline-white:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: var(--white);
+      transform: translateY(-2px);
+    }
+    .btn-white {
+      background: var(--white);
+      color: var(--violet);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .btn-white:hover {
+      background: var(--violet-xs);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+    .btn-amber {
+      background: var(--amber);
+      color: var(--indigo-900);
+      box-shadow: 0 4px 16px rgba(245,158,11,0.35);
+    }
+    .btn-amber:hover {
+      background: #D97706;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(245,158,11,0.45);
+    }
+    .btn-lg {
+      font-size: 1.05rem;
+      padding: 16px 34px;
+    }
+    .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-    .project-btn {
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
-      background: #e8eeff;
-      border: 2.5px solid var(--ink);
-      border-radius: 16px;
-      padding: 1rem 1.25rem;
-      box-shadow: 4px 4px 0 var(--ink);
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
-      color: var(--ink);
-      text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
+      height: 68px;
     }
-
-    .project-btn:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 var(--ink);
-    }
-
-    .project-name { font-size: 0.95rem; font-weight: 900; }
-    .project-desc { font-size: 0.75rem; font-weight: 700; color: var(--muted); margin-top: 0.1rem; }
-
-    .project-arrow {
-      font-size: 1.1rem;
-      font-weight: 900;
-      transition: transform 0.15s;
-    }
-
-    .project-btn:hover .project-arrow { transform: translate(3px, -3px); }
-
-    .music-card {
-      background: var(--surface);
-      border-radius: 24px;
-      padding: 1.6rem 1.75rem;
-      border: 2.5px solid var(--ink);
-      box-shadow: 5px 5px 0 var(--ink);
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .song {
-      background: var(--bg);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 0.75rem 1rem;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
-      overflow: hidden;
-    }
-
-    .song.active {
-      border-color: var(--ink);
-      box-shadow: 3px 3px 0 var(--ink);
-    }
-
-    .song-top {
+    .nav-logo {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 10px;
+    }
+    .nav-logo-mark {
+      width: 36px; height: 36px;
+      background: var(--violet);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 0.9rem;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--indigo-900);
+      letter-spacing: -0.03em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .nav-links a:hover {
+      background: var(--lavender);
+      color: var(--violet);
+    }
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-login {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: color 0.15s ease;
+    }
+    .nav-login:hover { color: var(--violet); }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      background: none;
+      border: none;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--gray-700);
+      border-radius: 2px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
 
-    .play-btn {
-      background: transparent;
-      border: none;
-      padding: 0;
-      font-size: 1.8rem;
-      line-height: 1;
-      flex-shrink: 0;
+    /* Mobile menu */
+    .nav-mobile {
+      display: none;
+      flex-direction: column;
+      padding: 16px 0 20px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .nav-mobile a {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .nav-mobile a:last-child { border-bottom: none; }
+    .nav-mobile .btn {
+      margin-top: 12px;
+      justify-content: center;
+      border-bottom: none;
+      padding: 13px 26px;
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      background: linear-gradient(160deg, var(--indigo-900) 0%, var(--indigo-950) 55%, #052E16 100%);
+      overflow: hidden;
+      position: relative;
+      padding: 80px 0 100px;
+    }
+    /* Decorative background blobs */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(22,163,74,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -60px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(22,163,74,0.25);
+      border: 1px solid rgba(22,163,74,0.4);
+      color: #86EFAC;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--amber);
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: #86EFAC;
+    }
+    .hero h1 .highlight {
+      position: relative;
+      color: var(--amber);
+      font-style: normal;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: #BBF7D0;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 460px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 36px;
+    }
+    .hero-avatars {
+      display: flex;
+    }
+    .hero-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--indigo-900);
+      margin-right: -8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    .hero-avatar:last-child { margin-right: 0; }
+    .av1 { background: #16A34A; }
+    .av2 { background: #0D9488; }
+    .av3 { background: #F59E0B; }
+    .av4 { background: #F43F5E; }
+    .hero-trust-text { font-size: 0.82rem; color: #BBF7D0; line-height: 1.4; margin-left: 10px; }
+    .hero-trust-text strong { color: white; }
 
-    .song-info { flex: 1; min-width: 0; }
-
-    .song-title {
-      font-size: 0.875rem;
-      font-weight: 900;
-      color: var(--ink);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .song-artist {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--muted);
-      margin-top: 0.1rem;
-    }
-
-    .song-time {
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: var(--muted);
-      flex-shrink: 0;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .progress-wrap {
-      margin-top: 0.6rem;
-      height: 4px;
-      background: var(--border);
-      border-radius: 999px;
-      overflow: hidden;
-      display: none;
-    }
-
-    .song.active .progress-wrap { display: block; }
-
-    .progress-bar {
-      height: 100%;
-      background: var(--ink);
-      border-radius: 999px;
-      width: 0%;
-      transition: width 0.3s linear;
-    }
-
-    .bars {
-      display: none;
-      align-items: flex-end;
-      gap: 2px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-
-    .song.playing .bars { display: flex; }
-    .song.playing .song-time { display: none; }
-
-    .bar {
-      width: 3px;
-      background: var(--ink);
-      border-radius: 2px;
-      animation: barBounce 0.8s ease infinite;
-    }
-
-    .bar:nth-child(1) { animation-delay: 0s;    height: 60%; }
-    .bar:nth-child(2) { animation-delay: 0.15s; height: 100%; }
-    .bar:nth-child(3) { animation-delay: 0.3s;  height: 40%; }
-    .bar:nth-child(4) { animation-delay: 0.45s; height: 80%; }
-
-    @keyframes barBounce {
-      0%,100% { transform: scaleY(0.4); }
-      50%      { transform: scaleY(1); }
-    }
-
-    .cd-spin {
-      display: inline-block;
-      animation: none;
-    }
-
-    .cd-spin.spinning {
-      animation: spin 1.5s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    .fun-row {
+    /* Hero Visual — CSS-only product card mockup */
+    .hero-visual {
       display: flex;
-      gap: 0.6rem;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 48px 16px;
+    }
+
+    .product-mockup {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-hero-card);
+      backdrop-filter: blur(8px);
+    }
+    .mockup-topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .md-red { background: #F87171; }
+    .md-yellow { background: #FCD34D; }
+    .md-green { background: #34D399; }
+    .mockup-title {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      margin-left: auto;
+      font-weight: 500;
+    }
+
+    .mockup-lesson-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .mlc-header {
+      background: linear-gradient(135deg, var(--violet) 0%, #15803D 100%);
+      padding: 18px 20px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .mlc-grade-badge {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .mlc-star {
+      color: var(--amber);
+      font-size: 1rem;
+    }
+    .mlc-body { padding: 16px 20px; }
+    .mlc-subject {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--violet);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .mlc-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--indigo-900);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .mlc-meta {
+      display: flex;
+      gap: 12px;
+    }
+    .mlc-tag {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      color: var(--gray-500);
+    }
+    .mlc-tag-icon {
+      width: 14px; height: 14px;
+      opacity: 0.7;
+    }
+
+    .mockup-progress {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+    .mp-label { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+    .mp-bar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 100px;
+      height: 6px;
+      margin-bottom: 6px;
+    }
+    .mp-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--violet-lt), var(--amber));
+    }
+    .mp-stats {
+      display: flex;
+      justify-content: space-between;
+    }
+    .mp-stat {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .mp-stat strong { color: white; }
+
+    /* Floating badges */
+    .hero-float-badge {
+      position: absolute;
+      background: white;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: float-gentle 4s ease-in-out infinite;
+      z-index: 2;
+    }
+    .hero-float-badge--top {
+      top: 12px; left: 0px;
+      animation-delay: 0s;
+    }
+    .hero-float-badge--bottom {
+      bottom: 12px; right: 0px;
+      animation-delay: 2s;
+    }
+    @keyframes float-gentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .hfb-icon { font-size: 1.2rem; }
+    .hfb-text { font-size: 0.72rem; font-weight: 700; color: var(--indigo-900); }
+    .hfb-sub { font-size: 0.65rem; color: var(--gray-500); }
+
+    /* ============================================================
+       STATS BAR
+    ============================================================ */
+    .stats-bar {
+      background: var(--lavender);
+      border-bottom: 1px solid var(--violet-xs);
+      padding: 36px 0;
+    }
+    .stats-bar-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 6px 0;
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid rgba(22,163,74,0.15);
+      padding-left: 24px;
+    }
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--violet);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+    }
+    .stat-icon svg { width: 22px; height: 22px; }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--indigo-900);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--gray-500);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* ============================================================
+       FEATURES
+    ============================================================ */
+    .features {
+      padding: 100px 0;
+      background: var(--white);
+    }
+    .features-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .features-header .section-sub {
+      margin-inline: auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+      cursor: default;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(22,163,74,0.25);
+      background: var(--white);
+    }
+    .feature-icon-wrap {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+    }
+    .fi-violet { background: var(--violet-xs); }
+    .fi-teal   { background: var(--teal-lt); }
+    .fi-amber  { background: var(--amber-lt); }
+    .fi-sky    { background: var(--sky-lt); }
+
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--indigo-900);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--gray-500);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       RESOURCE CATEGORIES
+    ============================================================ */
+    .categories {
+      padding: 100px 0;
+      background: linear-gradient(180deg, var(--lavender) 0%, var(--white) 100%);
+    }
+    .categories-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      gap: 24px;
+    }
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .cat-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 28px 28px 24px;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .cat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: transparent;
+    }
+    .cat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .cat-emoji { font-size: 2rem; }
+    .cat-grade-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .tag-violet { background: var(--violet-xs); color: var(--violet); }
+    .tag-teal   { background: var(--teal-lt);   color: var(--teal); }
+    .tag-amber  { background: var(--amber-lt);  color: #B45309; }
+    .tag-sky    { background: var(--sky-lt);    color: #0369A1; }
+    .tag-rose   { background: #FFE4E6;           color: #BE123C; }
+    .tag-indigo { background: var(--lavender);  color: var(--indigo-700); }
+
+    .cat-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--indigo-900);
+      margin-bottom: 8px;
+    }
+    .cat-card p {
+      font-size: 0.84rem;
+      color: var(--gray-500);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .cat-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+    .cat-count {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gray-500);
+    }
+    .cat-arrow {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--lavender);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--violet);
+      font-size: 0.85rem;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .cat-card:hover .cat-arrow {
+      background: var(--violet);
+      color: white;
+    }
+
+    /* ============================================================
+       HOW IT WORKS
+    ============================================================ */
+    .how {
+      padding: 100px 0;
+      background: var(--white);
+    }
+    .how-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+    /* Connector line — centered on the 76px circles */
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 38px; left: calc(16.67% + 38px);
+      right: calc(16.67% + 38px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--violet) 0%, var(--violet-lt) 50%, var(--amber) 100%);
+      z-index: 0;
+    }
+    .how-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .how-step-number {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 3px solid var(--violet);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--violet);
+      margin-bottom: 28px;
+      box-shadow: 0 0 0 8px var(--violet-xs);
+    }
+    .how-step:last-child .how-step-number {
+      border-color: var(--amber);
+      color: var(--amber);
+      box-shadow: 0 0 0 8px var(--amber-lt);
+    }
+    .how-step h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--indigo-900);
+      margin-bottom: 12px;
+    }
+    .how-step p {
+      font-size: 0.9rem;
+      color: var(--gray-500);
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    /* ============================================================
+       TESTIMONIALS
+    ============================================================ */
+    .testimonials {
+      padding: 100px 0;
+      background: var(--indigo-900);
+      position: relative;
+      overflow: hidden;
+    }
+    .testimonials::before {
+      content: '\201C';
+      position: absolute;
+      top: -40px; left: 5%;
+      font-family: var(--font-display);
+      font-size: 320px;
+      color: rgba(22,163,74,0.12);
+      line-height: 1;
+      pointer-events: none;
+      font-style: italic;
+    }
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .testimonials-header .section-heading { color: white; }
+    .testimonials-header .section-heading em { color: #86EFAC; }
+    .testimonials-header .section-sub { color: #94A3B8; margin-inline: auto; }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .testi-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .testi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.3);
+      border-color: rgba(22,163,74,0.4);
+    }
+    .testi-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 18px;
+      color: var(--amber);
+      font-size: 0.9rem;
+    }
+    .testi-quote {
+      font-size: 0.95rem;
+      color: #E2E8F0;
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .testi-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .ta1 { background: linear-gradient(135deg, var(--teal), #0891B2); }
+    .ta2 { background: linear-gradient(135deg, var(--violet), #15803D); }
+    .ta3 { background: linear-gradient(135deg, var(--amber), #D97706); }
+    .testi-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: white;
+    }
+    .testi-role {
+      font-size: 0.78rem;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+
+    /* ============================================================
+       PRICING TEASER
+    ============================================================ */
+    .pricing {
+      padding: 100px 0;
+      background: var(--gray-50);
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 960px;
+      margin-inline: auto;
+      padding-top: 16px; /* room for the .price-badge that overhangs the featured card */
+    }
+    .price-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .price-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .price-card.featured {
+      background: var(--indigo-900);
+      border-color: transparent;
+      position: relative;
+    }
+    .price-badge {
+      position: absolute;
+      top: -14px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--amber);
+      color: var(--indigo-900);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+    }
+    .price-tier {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--violet);
+      margin-bottom: 10px;
+    }
+    .price-card.featured .price-tier { color: #86EFAC; }
+    .price-amount {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--indigo-900);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .price-card.featured .price-amount { color: white; }
+    .price-period {
+      font-size: 0.82rem;
+      color: var(--gray-400);
+      margin-bottom: 24px;
+    }
+    .price-card.featured .price-period { color: #94A3B8; }
+    .price-divider {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 0 0 24px;
+    }
+    .price-card.featured .price-divider { border-color: rgba(255,255,255,0.1); }
+    .price-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .price-feat {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--gray-700);
+    }
+    .price-card.featured .price-feat { color: #BBF7D0; }
+    .price-check {
+      width: 18px; height: 18px;
+      background: var(--teal-lt);
+      color: var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-weight: 800;
+    }
+    .price-card.featured .price-check {
+      background: rgba(13,148,136,0.2);
+      color: #5EEAD4;
+    }
+
+    /* ============================================================
+       CTA BANNER
+    ============================================================ */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--violet) 0%, #166534 60%, var(--indigo-900) 100%);
+      padding: 80px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -80px;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%);
+    }
+    .cta-banner h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .cta-banner h2 em {
+      font-style: italic;
+      color: #FDE68A;
+    }
+    .cta-banner p {
+      color: #BBF7D0;
+      font-size: 1rem;
+      margin-bottom: 36px;
+    }
+    .cta-banner p.cta-fine-print {
+      font-size: 0.78rem;
+      color: rgba(199,210,254,0.6);
+      margin-bottom: 0;
+      margin-top: 14px;
+    }
+    .cta-form {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
       flex-wrap: wrap;
     }
-
-    .fun-pill {
-      background: var(--surface);
-      border: 2.5px solid var(--ink);
-      border-radius: 999px;
-      padding: 0.45rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--ink);
-      box-shadow: 3px 3px 0 var(--ink);
-      transition: transform 0.15s, box-shadow 0.15s;
-      font-family: 'Nunito', sans-serif;
+    .cta-input {
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      color: white;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 13px 20px;
+      border-radius: 100px;
+      width: 300px;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .cta-input::placeholder { color: rgba(255,255,255,0.5); }
+    .cta-input:focus {
+      border-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.18);
     }
 
+    /* ============================================================
+       FOOTER
+    ============================================================ */
     .footer {
-      text-align: center;
-      font-size: 0.75rem;
+      background: var(--indigo-950);
+      padding: 72px 0 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 60px;
+    }
+    .footer-brand {}
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .footer-logo-mark {
+      width: 32px; height: 32px;
+      background: var(--violet);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 0.85rem;
+    }
+    .footer-logo-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: white;
+      letter-spacing: -0.03em;
+    }
+    .footer-tagline {
+      font-size: 0.88rem;
+      color: #94A3B8;
+      line-height: 1.65;
+      margin-bottom: 24px;
+      max-width: 280px;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 10px;
+    }
+    .social-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94A3B8;
+      font-size: 0.85rem;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .social-btn:hover {
+      background: var(--violet);
+      color: white;
+      border-color: var(--violet);
+    }
+    .social-btn svg { width: 16px; height: 16px; }
+
+    .footer-col h4 {
+      font-size: 0.8rem;
       font-weight: 800;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      padding-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: white;
+      margin-bottom: 18px;
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 0.88rem;
+      color: #94A3B8;
+      transition: color 0.15s ease;
+    }
+    .footer-col ul li a:hover { color: white; }
+
+    .footer-bottom {
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: #4B5563;
+    }
+    .footer-legal {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+    }
+    .footer-legal a {
+      font-size: 0.8rem;
+      color: #4B5563;
+      transition: color 0.15s ease;
+    }
+    .footer-legal a:hover { color: #94A3B8; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { order: -1; }
+      .hero-float-badge--top { top: 0; left: 0; }
+      .hero-float-badge--bottom { bottom: 0; right: 0; }
+
+      .stats-bar-inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-item:nth-child(odd) { border-left: none; padding-left: 0; }
+      .stat-item:nth-child(even) { padding-left: 24px; }
+      .stat-item:nth-child(3), .stat-item:nth-child(4) {
+        border-top: 1px solid rgba(22,163,74,0.15);
+        padding-top: 24px;
+      }
+
+      .features-grid { grid-template-columns: 1fr; }
+      .categories-grid { grid-template-columns: 1fr; }
+      .categories-header { flex-direction: column; align-items: flex-start; }
+      .how-steps { grid-template-columns: 1fr; }
+      .how-steps::before { display: none; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .pricing-cards { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+
+      .hero { padding: 60px 0 72px; }
+      .features, .categories, .how, .testimonials, .pricing { padding: 72px 0; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-bar-inner { grid-template-columns: 1fr; }
+      .stat-item + .stat-item { border-left: none; padding-left: 0; border-top: 1px solid rgba(22,163,74,0.15); padding-top: 24px; }
+      .stat-item:nth-child(3), .stat-item:nth-child(4) { border-top: 1px solid rgba(22,163,74,0.15); padding-top: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
+
 <body>
 
-  <div id="cursor-dot"></div>
-  <div id="cursor-ring"></div>
-
-  <div class="wrap">
-
-    <div class="name-card">
-      <p class="hello">Hey there! <span class="wave">👋</span></p>
-      <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:0.9rem">
-        <img src="avatar.png" alt="Profile picture" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);object-fit:cover;flex-shrink:0"/>
-        <h1 style="margin-bottom:0">penalty</h1>
-      </div>
-      <p class="tagline">messing around with my chromebook 💀</p>
-    </div>
-
-    <div class="bio-card">
-     I like technology a bit too much. I'm not too skilled, but I like messing around with custom firmware, web development, etc.
-    </div>
-
-    <div class="details">
-      <div class="detail">
-        <p class="detail-label">Currently</p>
-        <p class="detail-val">Working on minHub</p>
-      </div>
-      <div class="detail">
-        <p class="detail-label">Contact</p>
-        <p class="detail-val">@penalty_lmao</p>
-      </div>
-    </div>
-
-    <div class="projects-card">
-      <p class="section-label">🛠️ Projects</p>
-      <a href="https://min-hub.vercel.app" target="_blank" rel="noopener" class="project-btn">
-        <div>
-          <div class="project-name">minHub</div>
-          <div class="project-desc">Check it out</div>
-        </div>
-        <span class="project-arrow">↗</span>
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <div class="nav-inner">
+      <!-- Logo -->
+      <a href="#" class="nav-logo" aria-label="Scholara home">
+        <div class="nav-logo-mark">Sc</div>
+        <span class="nav-logo-text">Scholara</span>
       </a>
-    </div>
 
-    <div class="music-card">
-      <p class="section-label">🎧 Favorite Songs</p>
+      <!-- Desktop nav links -->
+      <ul class="nav-links" role="list">
+        <li><a href="#">Home</a></li>
+        <li><a href="#categories">Resources</a></li>
+        <li><a href="#features">For Teachers</a></li>
+        <li><a href="#features">For Parents</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
 
-      <div class="song" data-src="heavenly.mp3">
-        <div class="song-top">
-          <button class="play-btn" aria-label="Play">
-            <span class="cd-spin">💿</span>
-          </button>
-          <div class="song-info">
-            <p class="song-title">Heavenly Jumpstyle</p>
-            <p class="song-artist">Ultra Slowed</p>
-          </div>
-          <div class="bars">
-            <div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div>
-          </div>
-          <span class="song-time">0:00</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar"></div></div>
+      <!-- Desktop CTA -->
+      <div class="nav-cta">
+        <a href="#" class="nav-login">Log In</a>
+        <a href="#" class="btn btn-primary">Sign Up Free</a>
       </div>
 
-      <div class="song" data-src="wildflower.mp3">
-        <div class="song-top">
-          <button class="play-btn" aria-label="Play">
-            <span class="cd-spin">💿</span>
-          </button>
-          <div class="song-info">
-            <p class="song-title">Wildflower</p>
-            <p class="song-artist">Yung Kai</p>
-          </div>
-          <div class="bars">
-            <div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div>
-          </div>
-          <span class="song-time">0:00</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar"></div></div>
-      </div>
-
-      <div class="song" data-src="posterboy.mp3">
-        <div class="song-top">
-          <button class="play-btn" aria-label="Play">
-            <span class="cd-spin">💿</span>
-          </button>
-          <div class="song-info">
-            <p class="song-title">Poster Boy</p>
-            <p class="song-artist">2hollis</p>
-          </div>
-          <div class="bars">
-            <div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div>
-          </div>
-          <span class="song-time">0:00</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar"></div></div>
-      </div>
+      <!-- Mobile hamburger -->
+      <button class="nav-hamburger" id="menuToggle" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
 
-    <div class="fun-row">
-      <button class="fun-pill">Skid</button>
-      <button class="fun-pill">Technology</button>
-      <button class="fun-pill">Gaming</button>
+    <!-- Mobile menu (hidden by default) -->
+    <div class="nav-mobile" id="mobileMenu" style="display:none;">
+      <a href="#">Home</a>
+      <a href="#categories">Resources</a>
+      <a href="#features">For Teachers</a>
+      <a href="#features">For Parents</a>
+      <a href="#">About</a>
+      <a href="#" style="color: var(--gray-700)">Log In</a>
+      <a href="#" class="btn btn-primary">Sign Up Free</a>
     </div>
-
-    <p class="footer">penalty.cv ✦ 2026</p>
-
   </div>
+</nav>
 
-  <script>
-    // ── CURSOR FIX ──
-    const dot  = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, snapped = false;
-    const INTERACTIVE = '.fun-pill, .detail, .project-btn, .play-btn, .song';
 
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX; 
-      mouseY = e.clientY;
-      dot.style.left = mouseX + 'px'; 
-      dot.style.top = mouseY + 'px';
-      
-      const el = document.elementFromPoint(mouseX, mouseY)?.closest(INTERACTIVE);
-      if (el) {
-        snapTo(el);
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="container">
+    <div class="hero-inner">
+
+      <!-- Left: Copy -->
+      <div class="hero-copy">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Now serving 1,200+ school districts across 48 states
+        </div>
+
+        <h1 id="hero-heading">
+          Every student's<br/>
+          <em>next great lesson</em><br/>
+          is one click away.
+        </h1>
+
+        <p class="hero-sub">
+          Scholara connects K–12 teachers, parents, and students with curriculum-aligned resources, real-time progress tools, and a community that makes learning feel possible for every child — from kindergarten through graduation.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#categories" class="btn btn-white btn-lg">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="10" cy="10" r="8"/>
+              <path d="M8 7l5 3-5 3V7z" fill="currentColor" stroke="none"/>
+            </svg>
+            Explore Resources
+          </a>
+          <a href="#" class="btn btn-outline-white btn-lg">Get Started Free</a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="hero-avatars">
+            <div class="hero-avatar av1">MJ</div>
+            <div class="hero-avatar av2">SR</div>
+            <div class="hero-avatar av3">PK</div>
+            <div class="hero-avatar av4">TL</div>
+          </div>
+          <p class="hero-trust-text">
+            Joined by <strong>420,000+ educators</strong><br/>
+            across the country this year
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: CSS Product Mockup -->
+      <div class="hero-visual">
+        <!-- Floating badge: top left -->
+        <div class="hero-float-badge hero-float-badge--top">
+          <span class="hfb-icon">🎯</span>
+          <div>
+            <div class="hfb-text">Curriculum-Aligned</div>
+            <div class="hfb-sub">Common Core &amp; NGSS Ready</div>
+          </div>
+        </div>
+
+        <div class="product-mockup">
+          <!-- Fake window chrome -->
+          <div class="mockup-topbar">
+            <span class="mockup-dot md-red"></span>
+            <span class="mockup-dot md-yellow"></span>
+            <span class="mockup-dot md-green"></span>
+            <span class="mockup-title">scholara.app — My Dashboard</span>
+          </div>
+
+          <!-- Lesson card -->
+          <div class="mockup-lesson-card">
+            <div class="mlc-header">
+              <span class="mlc-grade-badge">Grade 4</span>
+              <span class="mlc-star">★</span>
+            </div>
+            <div class="mlc-body">
+              <div class="mlc-subject">Mathematics · Fractions</div>
+              <div class="mlc-name">Understanding Equivalent Fractions Through Real-World Contexts</div>
+              <div class="mlc-meta">
+                <span class="mlc-tag">
+                  <svg class="mlc-tag-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/>
+                  </svg>
+                  45 min
+                </span>
+                <span class="mlc-tag">
+                  <svg class="mlc-tag-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M2 12V4l6-2 6 2v8l-6 2-6-2z"/>
+                  </svg>
+                  3 Activities
+                </span>
+                <span class="mlc-tag">
+                  <svg class="mlc-tag-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M13 3L6 10M3 7l3 3 7-7"/>
+                  </svg>
+                  CCSS Aligned
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="mockup-progress">
+            <div class="mp-label">Class progress this week</div>
+            <div class="mp-bar-track">
+              <div class="mp-bar-fill" style="width: 72%"></div>
+            </div>
+            <div class="mp-stats">
+              <span class="mp-stat"><strong>18</strong> of 25 students on track</span>
+              <span class="mp-stat"><strong>72%</strong> avg. completion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating badge: bottom right -->
+        <div class="hero-float-badge hero-float-badge--bottom">
+          <span class="hfb-icon">📈</span>
+          <div>
+            <div class="hfb-text">Progress Visible to Parents</div>
+            <div class="hfb-sub">Real-time updates</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     STATS BAR
+============================================================ -->
+<section class="stats-bar" aria-label="Platform statistics">
+  <div class="container">
+    <div class="stats-bar-inner">
+
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">48,000+</div>
+          <div class="stat-label">Curriculum resources</div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background: var(--teal);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">420K</div>
+          <div class="stat-label">Active teachers</div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background: var(--amber);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">3.2M</div>
+          <div class="stat-label">Students learning weekly</div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background: var(--rose);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="stat-number">1,200+</div>
+          <div class="stat-label">School districts served</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FEATURES
+============================================================ -->
+<section class="features" id="features" aria-labelledby="features-heading">
+  <div class="container">
+    <div class="features-header">
+      <span class="eyebrow">Why Scholara</span>
+      <h2 class="section-heading" id="features-heading">Built for the <em>whole</em><br/>learning village</h2>
+      <p class="section-sub" style="margin: 16px auto 0;">
+        Great education doesn't happen in isolation. Scholara brings together every person in a student's world — their teachers, parents, and administrators — with the tools to make learning stick.
+      </p>
+    </div>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-violet">📐</div>
+        <h3>Standards-Aligned Resources</h3>
+        <p>Every lesson, worksheet, and activity in Scholara maps directly to Common Core, NGSS, and state-level academic standards. You'll always know exactly what skills are being addressed and why — so planning periods become planning victories.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-teal">📊</div>
+        <h3>Teacher Dashboards That Work</h3>
+        <p>See your whole class at a glance: who's on track, who needs a nudge, and what topics deserve more time. Scholara's teacher dashboard turns data into clear, actionable next steps rather than a spreadsheet you'll never open again.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-amber">📈</div>
+        <h3>Student Progress Tracking</h3>
+        <p>Students see their own growth through visual progress maps that celebrate milestones and make goals feel reachable. Learning becomes a conversation, not a verdict, with weekly check-ins and skill mastery badges built right in.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-sky">👨‍👩‍👧</div>
+        <h3>Parent Visibility Tools</h3>
+        <p>Parents receive a weekly learning summary in plain language — no app download required. Know what your child is working on, celebrate wins together, and reach out to their teacher with one tap when you want to connect.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     RESOURCE CATEGORIES
+============================================================ -->
+<section class="categories" id="categories" aria-labelledby="categories-heading">
+  <div class="container">
+    <div class="categories-header">
+      <div>
+        <span class="eyebrow">Resource Library</span>
+        <h2 class="section-heading" id="categories-heading">Learning for every<br/><em>subject, every grade</em></h2>
+      </div>
+      <a href="#" class="btn btn-outline" style="flex-shrink:0;">Browse all 48,000+ resources →</a>
+    </div>
+
+    <div class="categories-grid">
+
+      <!-- Early Literacy -->
+      <div class="cat-card">
+        <div class="cat-top">
+          <span class="cat-emoji">📖</span>
+          <span class="cat-grade-tag tag-violet">Grades K–2</span>
+        </div>
+        <h3>Early Literacy</h3>
+        <p>Phonics lessons, sight word games, guided reading packs, and decodable texts designed to give every early reader a confident start. Resources align with the Science of Reading framework.</p>
+        <div class="cat-footer">
+          <span class="cat-count">7,400+ resources</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- STEM -->
+      <div class="cat-card">
+        <div class="cat-top">
+          <span class="cat-emoji">🔬</span>
+          <span class="cat-grade-tag tag-teal">Grades 3–8</span>
+        </div>
+        <h3>STEM Explorations</h3>
+        <p>Hands-on science experiments, engineering design challenges, and math problem sets that bring curiosity into the classroom. Every activity ships with teacher notes, materials lists, and differentiation tips.</p>
+        <div class="cat-footer">
+          <span class="cat-count">9,100+ resources</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Social Studies -->
+      <div class="cat-card">
+        <div class="cat-top">
+          <span class="cat-emoji">🌍</span>
+          <span class="cat-grade-tag tag-amber">Grades 3–8</span>
+        </div>
+        <h3>Social Studies & Civics</h3>
+        <p>Primary sources, map activities, civic literacy projects, and historical thinking tools that help students make sense of the world they're inheriting. Content is regularly reviewed for accuracy and inclusion.</p>
+        <div class="cat-footer">
+          <span class="cat-count">6,200+ resources</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Arts -->
+      <div class="cat-card">
+        <div class="cat-top">
+          <span class="cat-emoji">🎨</span>
+          <span class="cat-grade-tag tag-rose">Grades K–12</span>
+        </div>
+        <h3>Visual & Performing Arts</h3>
+        <p>Lesson plans for visual art, music, drama, and dance — complete with national standards crosswalks and inclusive adaptation guides. Because creative confidence matters as much as academic confidence.</p>
+        <div class="cat-footer">
+          <span class="cat-count">4,800+ resources</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- SEL -->
+      <div class="cat-card">
+        <div class="cat-top">
+          <span class="cat-emoji">💛</span>
+          <span class="cat-grade-tag tag-sky">Grades K–8</span>
+        </div>
+        <h3>Social-Emotional Learning</h3>
+        <p>Weekly check-in activities, emotion regulation tools, conflict resolution roleplays, and community-building exercises grounded in CASEL competencies. For the whole child, not just the academic one.</p>
+        <div class="cat-footer">
+          <span class="cat-count">3,100+ resources</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- High School Prep -->
+      <div class="cat-card">
+        <div class="cat-top">
+          <span class="cat-emoji">🎓</span>
+          <span class="cat-grade-tag tag-indigo">Grades 9–12</span>
+        </div>
+        <h3>High School & College Prep</h3>
+        <p>AP course supplements, SAT/ACT skill builders, college essay planning guides, and career exploration tools. Help every student cross the finish line with clarity about what comes next — and why it matters.</p>
+        <div class="cat-footer">
+          <span class="cat-count">8,500+ resources</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     HOW IT WORKS
+============================================================ -->
+<section class="how" aria-labelledby="how-heading">
+  <div class="container">
+    <div class="how-header">
+      <span class="eyebrow">Getting Started</span>
+      <h2 class="section-heading" id="how-heading">Up and running in<br/><em>under ten minutes</em></h2>
+      <p class="section-sub" style="margin: 16px auto 0; text-align: center;">
+        No professional development day required. Teachers, parents, and students all get where they're going fast.
+      </p>
+    </div>
+
+    <div class="how-steps">
+
+      <div class="how-step">
+        <div class="how-step-number">1</div>
+        <h3>Create Your Free Account</h3>
+        <p>Sign up with your school email in 60 seconds. Teachers get a classroom code; parents enter their child's school and join the learning network. No credit card, ever, for the free tier.</p>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-number">2</div>
+        <h3>Find & Assign Resources</h3>
+        <p>Filter by grade level, subject, standard code, or time available to find the right lesson immediately. Assign to your class, a small group, or individual students — and differentiate with one click.</p>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-number">3</div>
+        <h3>Track Growth Together</h3>
+        <p>Watch students progress on live dashboards. Parents receive a plain-language weekly digest. Administrators see school-wide trends. Everyone stays in the loop — no extra meetings needed.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TESTIMONIALS
+============================================================ -->
+<section class="testimonials" aria-labelledby="testi-heading">
+  <div class="container">
+    <div class="testimonials-header">
+      <span class="eyebrow" style="color: #86EFAC;">Voices from the Field</span>
+      <h2 class="section-heading" id="testi-heading">Real stories from real <em>classrooms</em></h2>
+      <p class="section-sub">Hear from the teachers, parents, and administrators who've made Scholara part of how their school community learns.</p>
+    </div>
+
+    <div class="testi-grid">
+
+      <!-- Testimonial 1: Teacher -->
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">
+          "I teach third-grade reading at a school where half my students are English language learners. Finding resources that are both standards-aligned and genuinely accessible used to eat up my Sunday evenings. Scholara changed that. I can filter by scaffolded language support, assign the lesson, and see who's struggling before I even walk in Monday morning. It's the first edtech tool I've actually kept using past October."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar ta1">MP</div>
+          <div>
+            <div class="testi-name">Maria Pellegrino</div>
+            <div class="testi-role">3rd Grade ELA Teacher · Lincoln Elementary, Denver, CO</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2: Parent -->
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">
+          "My son Eli is in fifth grade and has always struggled with math. Before Scholara, I had no idea what was happening in his class until the report card arrived — and by then the gaps had grown. Now I get a summary every Friday that actually tells me what he practiced, where he's doing well, and what to encourage at home. Last week he came to dinner and explained fractions to his little sister. That was a first. I cried, honestly."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar ta2">JT</div>
+          <div>
+            <div class="testi-name">James Thornton</div>
+            <div class="testi-role">Parent of a 5th Grader · Riverside School District, Austin, TX</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3: Administrator -->
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">
+          "We rolled out Scholara across all fourteen buildings in our district at the start of last school year. The adoption rate was the highest I've seen for any instructional tool in fifteen years — 87% of teachers using it weekly by November. The school-level dashboards gave our coaches real data to bring into observation conversations, and our 6th-grade reading proficiency scores showed a meaningful upward trend by spring. Scholara didn't do that alone, but it made the right conversations possible."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar ta3">DW</div>
+          <div>
+            <div class="testi-name">Dr. Dana Williams</div>
+            <div class="testi-role">Assistant Superintendent of Curriculum · Springfield USD, Springfield, OH</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PRICING TEASER
+============================================================ -->
+<section class="pricing" aria-labelledby="pricing-heading">
+  <div class="container">
+    <div class="pricing-header">
+      <span class="eyebrow">Plans & Pricing</span>
+      <h2 class="section-heading" id="pricing-heading">Powerful learning,<br/><em>priced for educators</em></h2>
+      <p class="section-sub" style="margin: 16px auto 0; text-align: center;">
+        Start completely free. Upgrade when you're ready. Schools and districts get custom pricing with district-wide admin tools included.
+      </p>
+    </div>
+
+    <div class="pricing-cards">
+
+      <!-- Free -->
+      <div class="price-card">
+        <div class="price-tier">Free Forever</div>
+        <div class="price-amount">$0</div>
+        <div class="price-period">No credit card required</div>
+        <hr class="price-divider"/>
+        <ul class="price-features">
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Access to 2,000 free resources across all grade levels
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Basic classroom assignment tools for up to 35 students
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Weekly parent digest emails for free-tier content
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Community forum access and Scholara Educator Network
+          </li>
+        </ul>
+        <a href="#" class="btn btn-outline" style="width:100%; justify-content:center;">Start Free</a>
+      </div>
+
+      <!-- Pro (featured) -->
+      <div class="price-card featured">
+        <span class="price-badge">Most Popular</span>
+        <div class="price-tier">Scholara Pro</div>
+        <div class="price-amount">$12</div>
+        <div class="price-period">per teacher / month, billed annually</div>
+        <hr class="price-divider"/>
+        <ul class="price-features">
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Full access to all 48,000+ resources and new weekly additions
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Advanced dashboards with skill-gap analysis and growth charts
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            One-click differentiation and small-group assignment tools
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Priority email support with 24-hour response guarantee
+          </li>
+        </ul>
+        <a href="#" class="btn btn-amber" style="width:100%; justify-content:center;">Start 30-Day Trial</a>
+      </div>
+
+      <!-- School/District -->
+      <div class="price-card">
+        <div class="price-tier">School &amp; District</div>
+        <div class="price-amount">Custom</div>
+        <div class="price-period">Volume pricing for 10+ teachers</div>
+        <hr class="price-divider"/>
+        <ul class="price-features">
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Everything in Scholara Pro, plus district admin dashboard
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Rostering via Clever, ClassLink, or CSV — setup in one day
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            Dedicated Customer Success Manager for onboarding and beyond
+          </li>
+          <li class="price-feat">
+            <span class="price-check">✓</span>
+            FERPA-compliant data agreements and SSO included
+          </li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width:100%; justify-content:center;">Request a Quote</a>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; margin-top:32px; font-size: 0.85rem; color: var(--gray-400);">
+      All plans include COPPA &amp; FERPA compliance. Title I schools may qualify for subsidized access. <a href="#" style="color: var(--violet); font-weight:600;">Learn more →</a>
+    </p>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     NEWSLETTER / CTA BANNER
+============================================================ -->
+<section class="cta-banner" aria-labelledby="cta-heading">
+  <div class="container" style="position:relative; z-index:1;">
+    <span class="eyebrow" style="color: #86EFAC; justify-content:center; display:flex;">Stay in the loop</span>
+    <h2 id="cta-heading">
+      Free teaching ideas,<br/><em>every Tuesday morning.</em>
+    </h2>
+    <p>Join 180,000 educators who get our weekly digest of fresh resources, research-backed strategies, and what's new on Scholara — no fluff, no spam.</p>
+    <div class="cta-form">
+      <input
+        type="email"
+        class="cta-input"
+        placeholder="your@school.edu"
+        aria-label="Email address for newsletter"
+      />
+      <button class="btn btn-amber btn-lg">
+        Subscribe Free
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 10h10M10 5l5 5-5 5"/>
+        </svg>
+      </button>
+    </div>
+    <p class="cta-fine-print">
+      Unsubscribe anytime. We respect your inbox the way you respect your students.
+    </p>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer" aria-label="Site footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Brand column -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">Sc</div>
+          <span class="footer-logo-text">Scholara</span>
+        </div>
+        <p class="footer-tagline">
+          Scholara is an education technology platform headquartered in Columbus, Ohio, dedicated to connecting K–12 teachers, parents, and students with the tools that make learning meaningful.
+        </p>
+        <div class="footer-socials">
+          <!-- Twitter/X -->
+          <a href="#" class="social-btn" aria-label="Scholara on X (Twitter)">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <!-- Facebook -->
+          <a href="#" class="social-btn" aria-label="Scholara on Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
+          <!-- Instagram -->
+          <a href="#" class="social-btn" aria-label="Scholara on Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="5"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <!-- LinkedIn -->
+          <a href="#" class="social-btn" aria-label="Scholara on LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <!-- YouTube -->
+          <a href="#" class="social-btn" aria-label="Scholara on YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Platform column -->
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#">Browse Resources</a></li>
+          <li><a href="#">For Teachers</a></li>
+          <li><a href="#">For Parents</a></li>
+          <li><a href="#">For Students</a></li>
+          <li><a href="#">For Administrators</a></li>
+          <li><a href="#">Pricing</a></li>
+        </ul>
+      </div>
+
+      <!-- Subjects column -->
+      <div class="footer-col">
+        <h4>Subjects</h4>
+        <ul>
+          <li><a href="#">Early Literacy</a></li>
+          <li><a href="#">Mathematics</a></li>
+          <li><a href="#">STEM &amp; Science</a></li>
+          <li><a href="#">Social Studies</a></li>
+          <li><a href="#">Arts Education</a></li>
+          <li><a href="#">Social-Emotional Learning</a></li>
+        </ul>
+      </div>
+
+      <!-- Company column -->
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Scholara</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Research &amp; Impact</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press &amp; Media</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer bottom bar -->
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Scholara Learning, Inc. All rights reserved. Made with ♥ in Columbus, Ohio.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Settings</a>
+        <a href="#">Accessibility</a>
+        <a href="#">FERPA &amp; COPPA</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ============================================================
+     VANILLA JS: Mobile menu toggle
+============================================================ -->
+<script>
+  (function () {
+    var toggle = document.getElementById('menuToggle');
+    var menu   = document.getElementById('mobileMenu');
+    var open   = false;
+
+    toggle.addEventListener('click', function () {
+      open = !open;
+      menu.style.display = open ? 'flex' : 'none';
+      toggle.setAttribute('aria-expanded', open);
+      // Animate the three bars
+      var bars = toggle.querySelectorAll('span');
+      if (open) {
+        bars[0].style.transform = 'translateY(7px) rotate(45deg)';
+        bars[1].style.opacity   = '0';
+        bars[2].style.transform = 'translateY(-7px) rotate(-45deg)';
       } else {
-        unsnap();
+        bars[0].style.transform = '';
+        bars[1].style.opacity   = '';
+        bars[2].style.transform = '';
       }
     });
 
-    function snapTo(el) {
-      const r = el.getBoundingClientRect(), pad = 6;
-      snapped = true;
-      ring.classList.add('snapped', 'hovering');
-      ring.style.width        = (r.width  + pad * 2) + 'px';
-      ring.style.height       = (r.height + pad * 2) + 'px';
-      ring.style.borderRadius = getComputedStyle(el).borderRadius;
-      ring.style.left         = (r.left + r.width  / 2) + 'px';
-      ring.style.top          = (r.top  + r.height / 2) + 'px';
-      dot.style.opacity = '0'; 
-    }
-
-    function unsnap() {
-      if (!snapped) return;
-      snapped = false;
-      ring.classList.remove('snapped', 'hovering');
-      ring.style.width = '36px'; 
-      ring.style.height = '36px';
-      ring.style.borderRadius = '50%';
-      dot.style.opacity = '1';
-    }
-
-    function animateRing() {
-      if (!snapped) {
-        ringX += (mouseX - ringX) * 0.15;
-        ringY += (mouseY - ringY) * 0.15;
-        ring.style.left = ringX + 'px'; 
-        ring.style.top = ringY + 'px';
-      } else {
-        ringX = mouseX;
-        ringY = mouseY;
-      }
-      requestAnimationFrame(animateRing);
-    }
-    animateRing();
-
-    window.addEventListener('scroll', () => { if (snapped) unsnap(); });
-
-    // ── AUDIO PLAYER ──
-    function fmt(s) {
-      const m = Math.floor(s / 60), sec = Math.floor(s % 60);
-      return m + ':' + String(sec).padStart(2, '0');
-    }
-
-    document.querySelectorAll('.song').forEach(songEl => {
-      const btn      = songEl.querySelector('.play-btn');
-      const progress = songEl.querySelector('.progress-bar');
-      const timeEl   = songEl.querySelector('.song-time');
-      const cd       = songEl.querySelector('.cd-spin');
-      const src      = songEl.dataset.src;
-      const audio    = new Audio(src);
-      let isPlaying  = false;
-
-      songEl._stop = function() {
-        audio.pause();
-        isPlaying = false;
-        cd.classList.remove('spinning');
-        songEl.classList.remove('playing', 'active');
-      };
-
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (isPlaying) {
-          songEl._stop();
-        } else {
-          document.querySelectorAll('.song').forEach(other => {
-            if (other !== songEl && other._stop) other._stop();
-          });
-          audio.play();
-          isPlaying = true;
-          cd.classList.add('spinning');
-          songEl.classList.add('playing', 'active');
-        }
-      });
-
-      audio.addEventListener('timeupdate', () => {
-        if (!audio.duration) return;
-        progress.style.width = (audio.currentTime / audio.duration * 100) + '%';
-        timeEl.textContent   = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
-      });
-
-      audio.addEventListener('ended', () => {
-        songEl._stop();
+    // Close menu on link click
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        open = false;
+        menu.style.display = 'none';
+        toggle.setAttribute('aria-expanded', false);
+        var bars = toggle.querySelectorAll('span');
+        bars[0].style.transform = '';
+        bars[1].style.opacity   = '';
+        bars[2].style.transform = '';
       });
     });
-  </script>
+  })();
+</script>
+
 </body>
 </html>
